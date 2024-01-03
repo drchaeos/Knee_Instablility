@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+bcrypt
+numpy
+pandas
+python-multipart
+Jinja2
+aiohttp
+python-dotenv
+opencv-python
+Pillow==8.2.0
