@@ -9,3 +9,5 @@ aiohttp
 python-dotenv
 opencv-python
 Pillow==8.2.0
+torch
+torchvision
