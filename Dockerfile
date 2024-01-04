@@ -1,38 +1,32 @@
-# Use the official Python image from the Docker Hub
-FROM python:3.8-slim-buster
+# 공식 Python 이미지 사용
+FROM python:3.9-slim-buster
 
-# Make a directory for our application
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# Install required system packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# 필요한 시스템 패키지 설치
+RUN apt-get update && apt-get install -y --no-install-recommends --fix-missing \
         git \
         gcc \
         g++ \
         libgl1-mesa-glx \
         libglib2.0-0 \
-        procps \
-        && rm -rf /var/lib/apt/lists/*
+        && rm -rf /var/lib/apt/lists/*d
 
-RUN pip install torch torchvision
+# requirements.txt 파일 복사
+COPY requirements.txt /app/
+
+# 필요한 Python 라이브러리 설치
+RUN pip install -r requirements.txt
+
+# Detectron2 설치
 RUN pip install 'git+https://github.com/facebookresearch/detectron2.git'
 
-# Copy the requirements.txt file into the container
-COPY requirements.txt .
+# 애플리케이션 코드 복사
+COPY . /app
 
-# Install required python packages
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the local files into the container
-COPY knee_server /app
-COPY knee/static /app/knee/static
-COPY knee/templates /app/knee/templates
-COPY knee/images /app/knee/images
-COPY knee_server/columns /app/columns
-
-
-# Make port 9000 available to the world outside this container
+# 컨테이너의 8000 포트에 접근
 EXPOSE 8000
 
-# Run the application
+# 컨테이너가 시작될 때 실행할 명령어 정의
 CMD ["uvicorn", "KNEE_server:app", "--host", "0.0.0.0", "--port", "8000"]
